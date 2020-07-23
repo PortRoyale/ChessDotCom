@@ -5,20 +5,30 @@
 
 import sys
 import requests
+import json
 
 try:
-	print("This is the name of the script: ", sys.argv[0])
-	print("Number of arguments: ", len(sys.argv))
-	print("The arguments are: " , str(sys.argv))
+	# print("This is the name of the script: ", sys.argv[0])
+	# print("Number of arguments: ", len(sys.argv))
+	# print("The arguments are: " , str(sys.argv))
 
 
 	# this checks if the user entered the correct syntax to search for a user's statistics
 	try: 
-		print("chess.com username: ", str(sys.argv[1]))
+		print("USERNAME: ", str(sys.argv[1]))
 		response = requests.get('https://api.chess.com/pub/player/' + sys.argv[1] + '/stats')
 
-		if response: # this will evaluate to TRUE is status code is between 200 and 400
-			print(response)
+		if response: # this will evaluate to TRUE if status code is between 200 and 400
+			stats = response.json()
+
+			# I am not interested in these values
+			stats.pop('chess_daily')
+			stats.pop('fide')
+			stats.pop('lessons')
+			stats.pop('puzzle_rush')
+
+			filtered = json.dumps(stats, indent=2)
+			print(filtered)
 		else:
 			print('Request returned an error.')
 
